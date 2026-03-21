@@ -1,0 +1,25 @@
+/*
+ * BPDrag.h
+ */
+
+#pragma once
+
+#include "BPForce.h"
+#include "ballistics/external/forces/drag/Drag.h"
+
+namespace godot {
+
+class BPDrag : public BPForce {
+    GDCLASS(BPDrag, BPForce)
+
+public:
+    std::unique_ptr<BulletPhysics::ballistics::external::forces::IForce> createForce() const override
+    {
+        return std::make_unique<BulletPhysics::ballistics::external::forces::Drag>();
+    }
+
+protected:
+    static void _bind_methods() {}
+};
+
+}

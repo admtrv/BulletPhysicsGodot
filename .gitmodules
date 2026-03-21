@@ -1,0 +1,9 @@
+[submodule "godot-cpp"]
+	path = godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = godot-4.5-stable
+
+[submodule "BulletPhysics"]
+	path = BulletPhysics
+	url = https://github.com/admtrv/BulletPhysics
+	branch = main

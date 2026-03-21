@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://cby6hto3k7jv0"]
+
+[ext_resource type="Script" uid="uid://dgoh0etqs1i8c" path="res://main.gd" id="1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("SkyMat_1")
+
+[sub_resource type="Environment" id="Env_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 2
+ambient_light_color = Color(0.8, 0.85, 0.95, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+radius = 0.05
+height = 0.1
+
+[node name="Main" type="Node3D" unique_id=328636327]
+script = ExtResource("1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=375613598]
+environment = SubResource("Env_1")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=493925495]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 5, 15)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1505953400]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 0)
+
+[node name="BPPhysicsWorld" type="BPPhysicsWorld" parent="." unique_id=478699034]
+
+[node name="BPAtmosphere" type="BPAtmosphere" parent="BPPhysicsWorld" unique_id=2139881031]
+
+[node name="BPGeographic" type="BPGeographic" parent="BPPhysicsWorld" unique_id=423544559]
+latitude = 45.0
+
+[node name="BPGravity" type="BPGravity" parent="BPPhysicsWorld" unique_id=1560801711]
+
+[node name="BPDrag" type="BPDrag" parent="BPPhysicsWorld" unique_id=1411483550]
+
+[node name="BPCoriolis" type="BPCoriolis" parent="BPPhysicsWorld" unique_id=1561500579]
+
+[node name="BPLift" type="BPLift" parent="BPPhysicsWorld" unique_id=971897723]
+
+[node name="BPMagnus" type="BPMagnus" parent="BPPhysicsWorld" unique_id=1129927448]
+
+[node name="BPProjectile" type="BPProjectile" parent="." unique_id=130935787]
+muzzle_velocity = 50.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mass = 0.01
+gravity_scale = 0.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BPProjectile" unique_id=1647674383]
+mesh = SubResource("SphereMesh_1")

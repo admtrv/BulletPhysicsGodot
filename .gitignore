@@ -1,0 +1,9 @@
+# build
+build/
+
+# godot
+project/.godot/
+*.uid
+
+# binary
+project/bin/*.so
