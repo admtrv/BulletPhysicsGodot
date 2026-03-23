@@ -33,11 +33,11 @@ protected:
     {
         ClassDB::bind_method(D_METHOD("set_latitude", "latitude"), &BPGeographic::set_latitude);
         ClassDB::bind_method(D_METHOD("get_latitude"), &BPGeographic::get_latitude);
-        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "latitude", PROPERTY_HINT_RANGE, "-90,90,0.1"), "set_latitude", "get_latitude");
+        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "latitude", PROPERTY_HINT_RANGE, "-90,90,0.000001,degrees"), "set_latitude", "get_latitude");
 
         ClassDB::bind_method(D_METHOD("set_longitude", "longitude"), &BPGeographic::set_longitude);
         ClassDB::bind_method(D_METHOD("get_longitude"), &BPGeographic::get_longitude);
-        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "longitude", PROPERTY_HINT_RANGE, "-180,180,0.1"), "set_longitude", "get_longitude");
+        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "longitude", PROPERTY_HINT_RANGE, "-180,180,0.000001,degrees"), "set_longitude", "get_longitude");
     }
 
 private:

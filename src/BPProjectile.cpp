@@ -22,11 +22,11 @@ void BPProjectile::_bind_methods()
 
     ClassDB::bind_method(D_METHOD("set_projectile_mass", "mass"), &BPProjectile::set_projectile_mass);
     ClassDB::bind_method(D_METHOD("get_projectile_mass"), &BPProjectile::get_projectile_mass);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_mass", PROPERTY_HINT_RANGE, "0.001,1.0,0.001"), "set_projectile_mass", "get_projectile_mass");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_mass", PROPERTY_HINT_RANGE, "0.001,1000.0,0.001,suffix:kg"), "set_projectile_mass", "get_projectile_mass");
 
     ClassDB::bind_method(D_METHOD("set_diameter", "diameter"), &BPProjectile::set_diameter);
     ClassDB::bind_method(D_METHOD("get_diameter"), &BPProjectile::get_diameter);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_diameter", PROPERTY_HINT_RANGE, "0.001,0.1,0.0001"), "set_diameter", "get_diameter");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_diameter", PROPERTY_HINT_RANGE, "0.00001,1.0,0.00001,suffix:m"), "set_diameter", "get_diameter");
 
     ClassDB::bind_method(D_METHOD("set_drag_model", "model"), &BPProjectile::set_drag_model);
     ClassDB::bind_method(D_METHOD("get_drag_model"), &BPProjectile::get_drag_model);
@@ -34,14 +34,14 @@ void BPProjectile::_bind_methods()
 
     ClassDB::bind_method(D_METHOD("set_custom_drag_coefficient", "cd"), &BPProjectile::set_custom_drag_coefficient);
     ClassDB::bind_method(D_METHOD("get_custom_drag_coefficient"), &BPProjectile::get_custom_drag_coefficient);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_custom_drag_coefficient", PROPERTY_HINT_RANGE, "0.01,2.0,0.01"), "set_custom_drag_coefficient", "get_custom_drag_coefficient");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_drag_coefficient", PROPERTY_HINT_RANGE, "0.0,10.0,0.01"), "set_custom_drag_coefficient", "get_custom_drag_coefficient");
 
     // muzzle group
     ADD_GROUP("Muzzle", "muzzle_");
 
     ClassDB::bind_method(D_METHOD("set_muzzle_velocity", "velocity"), &BPProjectile::set_muzzle_velocity);
     ClassDB::bind_method(D_METHOD("get_muzzle_velocity"), &BPProjectile::get_muzzle_velocity);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_velocity", PROPERTY_HINT_RANGE, "1,2000,1"), "set_muzzle_velocity", "get_muzzle_velocity");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_velocity", PROPERTY_HINT_RANGE, "0.0,1000.0,0.01,suffix:m/s"), "set_muzzle_velocity", "get_muzzle_velocity");
 
     ClassDB::bind_method(D_METHOD("set_rifling_direction", "direction"), &BPProjectile::set_rifling_direction);
     ClassDB::bind_method(D_METHOD("get_rifling_direction"), &BPProjectile::get_rifling_direction);
@@ -49,22 +49,22 @@ void BPProjectile::_bind_methods()
 
     ClassDB::bind_method(D_METHOD("set_twist_rate", "rate"), &BPProjectile::set_twist_rate);
     ClassDB::bind_method(D_METHOD("get_twist_rate"), &BPProjectile::get_twist_rate);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_twist_rate", PROPERTY_HINT_RANGE, "1,30,0.1"), "set_twist_rate", "get_twist_rate");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_twist_rate", PROPERTY_HINT_RANGE, "0.1,100,0.1,suffix:cal/turn"), "set_twist_rate", "get_twist_rate");
 
     // advanced group
     ADD_GROUP("Advanced", "advanced_");
 
     ClassDB::bind_method(D_METHOD("set_overtuning_coefficient", "value"), &BPProjectile::set_overtuning_coefficient);
     ClassDB::bind_method(D_METHOD("get_overtuning_coefficient"), &BPProjectile::get_overtuning_coefficient);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_overtuning_coefficient", PROPERTY_HINT_RANGE, "0.0,20.0,0.01"), "set_overtuning_coefficient", "get_overtuning_coefficient");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_overtuning_coefficient", PROPERTY_HINT_RANGE, "0.0,10.0,0.01"), "set_overtuning_coefficient", "get_overtuning_coefficient");
 
     ClassDB::bind_method(D_METHOD("set_lift_coefficient", "value"), &BPProjectile::set_lift_coefficient);
     ClassDB::bind_method(D_METHOD("get_lift_coefficient"), &BPProjectile::get_lift_coefficient);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_lift_coefficient", PROPERTY_HINT_RANGE, "0.0,1.0,0.001"), "set_lift_coefficient", "get_lift_coefficient");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_lift_coefficient", PROPERTY_HINT_RANGE, "0.0,10.0,0.01"), "set_lift_coefficient", "get_lift_coefficient");
 
     ClassDB::bind_method(D_METHOD("set_magnus_coefficient", "value"), &BPProjectile::set_magnus_coefficient);
     ClassDB::bind_method(D_METHOD("get_magnus_coefficient"), &BPProjectile::get_magnus_coefficient);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_magnus_coefficient", PROPERTY_HINT_RANGE, "0.0,1.0,0.001"), "set_magnus_coefficient", "get_magnus_coefficient");
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_magnus_coefficient", PROPERTY_HINT_RANGE, "0.0,10.0,0.01"), "set_magnus_coefficient", "get_magnus_coefficient");
 
     ClassDB::bind_method(D_METHOD("is_active"), &BPProjectile::is_active);
 
@@ -73,7 +73,7 @@ void BPProjectile::_bind_methods()
 
 void BPProjectile::_validate_property(PropertyInfo& p_property) const
 {
-    if (p_property.name == StringName("projectile_custom_drag_coefficient")
+    if (p_property.name == StringName("projectile_drag_coefficient")
         && m_dragModel != static_cast<int>(ballistics::external::forces::drag::DragCurveModel::CUSTOM))
     {
         p_property.usage = PROPERTY_USAGE_NO_EDITOR;

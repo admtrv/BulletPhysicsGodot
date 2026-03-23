@@ -72,7 +72,7 @@ private:
     bool m_active = false;
 
     // projectile
-    double m_mass = 0.0095;
+    double m_mass = 0.01;
     double m_diameter = 0.00762;
     int m_dragModel = 4; // G7
     double m_customDragCoefficient = 0.5;

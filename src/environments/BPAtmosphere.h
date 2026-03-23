@@ -30,11 +30,11 @@ protected:
     {
         ClassDB::bind_method(D_METHOD("set_base_temperature", "temperature"), &BPAtmosphere::set_base_temperature);
         ClassDB::bind_method(D_METHOD("get_base_temperature"), &BPAtmosphere::get_base_temperature);
-        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_temperature", PROPERTY_HINT_RANGE, "200,350,0.1"), "set_base_temperature", "get_base_temperature");
+        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_temperature", PROPERTY_HINT_RANGE, "0,350,0.01,suffix:K"), "set_base_temperature", "get_base_temperature");
 
         ClassDB::bind_method(D_METHOD("set_base_pressure", "pressure"), &BPAtmosphere::set_base_pressure);
         ClassDB::bind_method(D_METHOD("get_base_pressure"), &BPAtmosphere::get_base_pressure);
-        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_pressure", PROPERTY_HINT_RANGE, "80000,120000,100"), "set_base_pressure", "get_base_pressure");
+        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_pressure", PROPERTY_HINT_RANGE, "0,110000,0.1,suffix:Pa"), "set_base_pressure", "get_base_pressure");
     }
 
 private:

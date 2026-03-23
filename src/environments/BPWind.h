@@ -27,7 +27,7 @@ protected:
     {
         ClassDB::bind_method(D_METHOD("set_wind", "wind"), &BPWind::set_wind);
         ClassDB::bind_method(D_METHOD("get_wind"), &BPWind::get_wind);
-        ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "wind"), "set_wind", "get_wind");
+        ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "wind", PROPERTY_HINT_NONE, "suffix:m/s"), "set_wind", "get_wind");
     }
 
 private:

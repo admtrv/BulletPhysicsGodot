@@ -26,7 +26,7 @@ protected:
     {
         ClassDB::bind_method(D_METHOD("set_humidity", "humidity"), &BPHumidity::set_humidity);
         ClassDB::bind_method(D_METHOD("get_humidity"), &BPHumidity::get_humidity);
-        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "humidity", PROPERTY_HINT_RANGE, "0,100,0.1"), "set_humidity", "get_humidity");
+        ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "humidity", PROPERTY_HINT_RANGE, "0,100,0.01,suffix:%"), "set_humidity", "get_humidity");
     }
 
 private:
