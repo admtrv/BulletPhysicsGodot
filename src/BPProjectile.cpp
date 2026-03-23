@@ -51,6 +51,21 @@ void BPProjectile::_bind_methods()
     ClassDB::bind_method(D_METHOD("get_twist_rate"), &BPProjectile::get_twist_rate);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_twist_rate", PROPERTY_HINT_RANGE, "1,30,0.1"), "set_twist_rate", "get_twist_rate");
 
+    // advanced group
+    ADD_GROUP("Advanced", "advanced_");
+
+    ClassDB::bind_method(D_METHOD("set_overtuning_coefficient", "value"), &BPProjectile::set_overtuning_coefficient);
+    ClassDB::bind_method(D_METHOD("get_overtuning_coefficient"), &BPProjectile::get_overtuning_coefficient);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_overtuning_coefficient", PROPERTY_HINT_RANGE, "0.0,20.0,0.01"), "set_overtuning_coefficient", "get_overtuning_coefficient");
+
+    ClassDB::bind_method(D_METHOD("set_lift_coefficient", "value"), &BPProjectile::set_lift_coefficient);
+    ClassDB::bind_method(D_METHOD("get_lift_coefficient"), &BPProjectile::get_lift_coefficient);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_lift_coefficient", PROPERTY_HINT_RANGE, "0.0,1.0,0.001"), "set_lift_coefficient", "get_lift_coefficient");
+
+    ClassDB::bind_method(D_METHOD("set_magnus_coefficient", "value"), &BPProjectile::set_magnus_coefficient);
+    ClassDB::bind_method(D_METHOD("get_magnus_coefficient"), &BPProjectile::get_magnus_coefficient);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "advanced_magnus_coefficient", PROPERTY_HINT_RANGE, "0.0,1.0,0.001"), "set_magnus_coefficient", "get_magnus_coefficient");
+
     ClassDB::bind_method(D_METHOD("is_active"), &BPProjectile::is_active);
 
     ADD_SIGNAL(MethodInfo("projectile_landed"));
@@ -82,6 +97,10 @@ void BPProjectile::fire(double elevationDeg, double azimuthDeg)
     specs.withMuzzle(m_muzzleVelocity,
         m_riflingDirection == 0 ? projectile::Direction::RIGHT : projectile::Direction::LEFT,
         m_twistRate);
+
+    specs.withOvertuningCoefficient(m_overtuningCoefficient);
+    specs.withLiftCoefficient(m_liftCoefficient);
+    specs.withMagnusCoefficient(m_magnusCoefficient);
 
     // create adapter over self (this is a RigidBody3D)
     m_body = std::make_unique<GodotRigidBody>(this, specs);
@@ -136,4 +155,13 @@ int BPProjectile::get_rifling_direction() const { return m_riflingDirection; }
 
 void BPProjectile::set_twist_rate(double rate) { m_twistRate = rate; }
 double BPProjectile::get_twist_rate() const { return m_twistRate; }
+
+void BPProjectile::set_overtuning_coefficient(double val) { m_overtuningCoefficient = val; }
+double BPProjectile::get_overtuning_coefficient() const { return m_overtuningCoefficient; }
+
+void BPProjectile::set_lift_coefficient(double val) { m_liftCoefficient = val; }
+double BPProjectile::get_lift_coefficient() const { return m_liftCoefficient; }
+
+void BPProjectile::set_magnus_coefficient(double val) { m_magnusCoefficient = val; }
+double BPProjectile::get_magnus_coefficient() const { return m_magnusCoefficient; }
 

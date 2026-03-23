@@ -53,6 +53,16 @@ public:
     void set_twist_rate(double rate);
     double get_twist_rate() const;
 
+    // coefficients
+    void set_overtuning_coefficient(double val);
+    double get_overtuning_coefficient() const;
+
+    void set_lift_coefficient(double val);
+    double get_lift_coefficient() const;
+
+    void set_magnus_coefficient(double val);
+    double get_magnus_coefficient() const;
+
     void _validate_property(PropertyInfo& p_property) const;
 
 protected:
@@ -65,12 +75,17 @@ private:
     double m_mass = 0.0095;
     double m_diameter = 0.00762;
     int m_dragModel = 4; // G7
-    double m_customDragCoefficient = 0.3;
+    double m_customDragCoefficient = 0.5;
 
     // muzzle
     double m_muzzleVelocity = 800.0;
     int m_riflingDirection = 0; // 0=RIGHT, 1=LEFT
     double m_twistRate = 12.0;
+
+    // coefficients
+    double m_overtuningCoefficient = 4.0;
+    double m_liftCoefficient = 0.10;
+    double m_magnusCoefficient = 0.10;
 
     // physics adapter
     std::unique_ptr<GodotRigidBody> m_body;
