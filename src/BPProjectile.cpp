@@ -30,7 +30,11 @@ void BPProjectile::_bind_methods()
 
     ClassDB::bind_method(D_METHOD("set_drag_model", "model"), &BPProjectile::set_drag_model);
     ClassDB::bind_method(D_METHOD("get_drag_model"), &BPProjectile::get_drag_model);
-    ADD_PROPERTY(PropertyInfo(Variant::INT, "projectile_drag_model", PROPERTY_HINT_ENUM, "G1,G2,G5,G6,G7,G8,GL"), "set_drag_model", "get_drag_model");
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "projectile_drag_model", PROPERTY_HINT_ENUM, "G1,G2,G5,G6,G7,G8,GL,Custom"), "set_drag_model", "get_drag_model");
+
+    ClassDB::bind_method(D_METHOD("set_custom_drag_coefficient", "cd"), &BPProjectile::set_custom_drag_coefficient);
+    ClassDB::bind_method(D_METHOD("get_custom_drag_coefficient"), &BPProjectile::get_custom_drag_coefficient);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "projectile_custom_drag_coefficient", PROPERTY_HINT_RANGE, "0.01,2.0,0.01"), "set_custom_drag_coefficient", "get_custom_drag_coefficient");
 
     // muzzle group
     ADD_GROUP("Muzzle", "muzzle_");
@@ -47,22 +51,37 @@ void BPProjectile::_bind_methods()
     ClassDB::bind_method(D_METHOD("get_twist_rate"), &BPProjectile::get_twist_rate);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "muzzle_twist_rate", PROPERTY_HINT_RANGE, "1,30,0.1"), "set_twist_rate", "get_twist_rate");
 
-    // trajectory
-    ClassDB::bind_method(D_METHOD("get_trajectory"), &BPProjectile::get_trajectory);
     ClassDB::bind_method(D_METHOD("is_active"), &BPProjectile::is_active);
 
-    ADD_SIGNAL(MethodInfo("trajectory_updated"));
     ADD_SIGNAL(MethodInfo("projectile_landed"));
+}
+
+void BPProjectile::_validate_property(PropertyInfo& p_property) const
+{
+    if (p_property.name == StringName("projectile_custom_drag_coefficient")
+        && m_dragModel != static_cast<int>(ballistics::external::forces::drag::DragCurveModel::CUSTOM))
+    {
+        p_property.usage = PROPERTY_USAGE_NO_EDITOR;
+    }
 }
 
 void BPProjectile::fire(double elevationDeg, double azimuthDeg)
 {
     // build specs
-    auto specs = projectile::ProjectileSpecs::create(m_mass, m_diameter)
-        .withDragModel(static_cast<ballistics::external::forces::drag::DragCurveModel>(m_dragModel))
-        .withMuzzle(m_muzzleVelocity,
-            m_riflingDirection == 0 ? projectile::Direction::RIGHT : projectile::Direction::LEFT,
-            m_twistRate);
+    auto specs = projectile::ProjectileSpecs::create(m_mass, m_diameter);
+
+    if (m_dragModel == static_cast<int>(ballistics::external::forces::drag::DragCurveModel::CUSTOM))
+    {
+        specs.withCustomDragCoefficient(m_customDragCoefficient);
+    }
+    else
+    {
+        specs.withDragModel(static_cast<ballistics::external::forces::drag::DragCurveModel>(m_dragModel));
+    }
+
+    specs.withMuzzle(m_muzzleVelocity,
+        m_riflingDirection == 0 ? projectile::Direction::RIGHT : projectile::Direction::LEFT,
+        m_twistRate);
 
     // create adapter over self (this is a RigidBody3D)
     m_body = std::make_unique<GodotRigidBody>(this, specs);
@@ -75,10 +94,6 @@ void BPProjectile::fire(double elevationDeg, double azimuthDeg)
     double sa = std::sin(azim);
     double ca = std::cos(azim);
     m_body->setVelocity({ce * sa * m_muzzleVelocity, se * m_muzzleVelocity, ce * ca * m_muzzleVelocity});
-
-    // clear trajectory
-    m_trajectory.clear();
-    m_trajectory.push_back(get_position());
 
     m_active = true;
 }
@@ -93,11 +108,8 @@ void BPProjectile::step(BulletPhysics::math::IIntegrator& integrator, BulletPhys
     integrator.step(*m_body, &world, delta);
 
     math::Vec3 pos = m_body->getPosition();
-    m_trajectory.push_back(Vector3(pos.x, pos.y, pos.z));
 
-    emit_signal("trajectory_updated");
-
-    if (pos.y <= 0.0 && m_trajectory.size() > 2)
+    if (pos.y <= 0.0)
     {
         m_active = false;
         emit_signal("projectile_landed");
@@ -110,8 +122,11 @@ double BPProjectile::get_projectile_mass() const { return m_mass; }
 void BPProjectile::set_diameter(double diameter) { m_diameter = diameter; }
 double BPProjectile::get_diameter() const { return m_diameter; }
 
-void BPProjectile::set_drag_model(int model) { m_dragModel = model; }
+void BPProjectile::set_drag_model(int model) { m_dragModel = model; notify_property_list_changed(); }
 int BPProjectile::get_drag_model() const { return m_dragModel; }
+
+void BPProjectile::set_custom_drag_coefficient(double cd) { m_customDragCoefficient = cd; }
+double BPProjectile::get_custom_drag_coefficient() const { return m_customDragCoefficient; }
 
 void BPProjectile::set_muzzle_velocity(double vel) { m_muzzleVelocity = vel; }
 double BPProjectile::get_muzzle_velocity() const { return m_muzzleVelocity; }
@@ -122,4 +137,3 @@ int BPProjectile::get_rifling_direction() const { return m_riflingDirection; }
 void BPProjectile::set_twist_rate(double rate) { m_twistRate = rate; }
 double BPProjectile::get_twist_rate() const { return m_twistRate; }
 
-PackedVector3Array BPProjectile::get_trajectory() const { return m_trajectory; }

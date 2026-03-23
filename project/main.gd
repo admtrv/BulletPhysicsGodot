@@ -5,6 +5,7 @@ extends Node3D
 
 var trail_mesh: ImmediateMesh
 var trail_instance: MeshInstance3D
+var trajectory: PackedVector3Array
 
 func _ready():
 	# grid
@@ -22,10 +23,10 @@ func _ready():
 	trail_instance.material_override = mat
 
 	# signals
-	projectile.trajectory_updated.connect(_on_trajectory_updated)
 	projectile.projectile_landed.connect(_on_projectile_landed)
 	# fire with angles: 45 deg elevation, 0 deg azimuth
 	# muzzle_velocity set on the node
+	trajectory.push_back(projectile.position)
 	projectile.fire(45.0, 0.0)
 
 func _process(_delta):
@@ -33,20 +34,20 @@ func _process(_delta):
 	camera.position = Vector3(pos.x + 3.0, pos.y + 2.0, pos.z - 5.0)
 	camera.look_at(pos)
 
-func _on_trajectory_updated():
-	_draw_trail()
+	if projectile.is_active():
+		trajectory.push_back(pos)
+		_draw_trail()
 
 func _on_projectile_landed():
 	print("Landed at: ", projectile.position)
 
 func _draw_trail():
-	var points = projectile.get_trajectory()
 	trail_mesh.clear_surfaces()
-	if points.size() < 2:
+	if trajectory.size() < 2:
 		return
 
 	trail_mesh.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
-	for point in points:
+	for point in trajectory:
 		trail_mesh.surface_add_vertex(point)
 	trail_mesh.surface_end()
 

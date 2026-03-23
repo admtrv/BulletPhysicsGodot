@@ -5,7 +5,6 @@
 #pragma once
 
 #include <godot_cpp/classes/rigid_body3d.hpp>
-#include <godot_cpp/variant/packed_vector3_array.hpp>
 
 #include "GodotRigidBody.h"
 
@@ -41,6 +40,9 @@ public:
     void set_drag_model(int model);
     int get_drag_model() const;
 
+    void set_custom_drag_coefficient(double cd);
+    double get_custom_drag_coefficient() const;
+
     // muzzle specs
     void set_muzzle_velocity(double vel);
     double get_muzzle_velocity() const;
@@ -51,8 +53,7 @@ public:
     void set_twist_rate(double rate);
     double get_twist_rate() const;
 
-    // trajectory
-    PackedVector3Array get_trajectory() const;
+    void _validate_property(PropertyInfo& p_property) const;
 
 protected:
     static void _bind_methods();
@@ -64,6 +65,7 @@ private:
     double m_mass = 0.0095;
     double m_diameter = 0.00762;
     int m_dragModel = 4; // G7
+    double m_customDragCoefficient = 0.3;
 
     // muzzle
     double m_muzzleVelocity = 800.0;
@@ -72,9 +74,6 @@ private:
 
     // physics adapter
     std::unique_ptr<GodotRigidBody> m_body;
-
-    // trajectory
-    PackedVector3Array m_trajectory;
 };
 
 }
