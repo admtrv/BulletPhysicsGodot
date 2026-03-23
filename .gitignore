@@ -1,5 +1,5 @@
-# build
-build/
+# ide
+.idea
 
 # godot
 project/.godot/
