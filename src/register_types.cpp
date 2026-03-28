@@ -18,6 +18,8 @@
 #include "environments/BPHumidity.h"
 #include "environments/BPWind.h"
 
+#include "geography/CoordinateMapping.h"
+
 #include <gdextension_interface.h>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
@@ -31,6 +33,8 @@ void initialize_bullet_physics(ModuleInitializationLevel p_level)
     {
         return;
     }
+
+    BulletPhysics::geography::CoordinateMapping::set(BulletPhysics::geography::mappings::Godot());
 
     GDREGISTER_CLASS(BPPhysicsWorld);
     GDREGISTER_CLASS(BPProjectile);
